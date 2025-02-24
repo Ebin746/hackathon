@@ -9,11 +9,10 @@ function App() {
   return (
     <>
      <div className="login">
-     <form >
-      <input type="text" name="name" placeholder="Name" />
-      <input type="email" name="email" placeholder="Email" />
-      <button type="submit">Submit</button>
-    </form>
+     <form action="">
+      <label htmlFor="name">name</label>
+      <input type="text" className="name"/>
+     </form>
      </div>
     </>
   )
