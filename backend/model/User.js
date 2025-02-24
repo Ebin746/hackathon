@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  walletAddress: { type: String}, // ETH Wallet
-  name: { type: String },
+const UserSchema = new mongoose.Schema({
+  walletAddress: { type: String, required: true, unique: true }, // ETH Address
+  name: { type: String, required: true },
   phone: { type: String },
-  recyclables: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recyclable" }],
-  earnings: { type: Number, default: 0 }, // Total ETH earned
+  items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item" }], // User's recyclables
+  ethEarned: { type: Number, default: 0 }, // Total ETH earned
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", UserSchema);
