@@ -5,15 +5,43 @@ const Item = require("../model/Item");
 
 // 🔹 View Available Items to Pick Up
 router.get("/available-items", async (req, res) => {
-  try {
-    const items = await Item.find({ status: "Pending" }).populate("user");
-    res.json(items);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching items", error: err.message });
-  }
-});
+    try {
+      const groupedItems = await Item.aggregate([
+        { $match: { status: "Pending" } }, // Only pending items
+        { 
+          $group: { 
+            _id: "$user", // Group by user ID
+            items: { $push: "$$ROOT" } // Push all items for the user
+          } 
+        },
+        { 
+          $lookup: { 
+            from: "users", // Reference User collection
+            localField: "_id", 
+            foreignField: "_id",
+            as: "userDetails"
+          } 
+        },
+        { $unwind: "$userDetails" }, // Convert userDetails array into an object
+        { 
+          $project: { 
+            _id: 0, // Hide _id
+            userId: "$userDetails._id",
+            userName: "$userDetails.name",
+            userPhone: "$userDetails.phone",
+            items: 1
+          } 
+        }
+      ]);
+  
+      res.json(groupedItems);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching grouped items", error: err.message });
+    }
+  });
+  
 
 //  Assign Item to Middleman
 router.post("/assign-item", async (req, res) => {

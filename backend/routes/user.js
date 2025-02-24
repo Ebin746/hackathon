@@ -6,11 +6,11 @@ const Item = require("../model/Item")
 // 🔹 Add Recyclable Item
 router.post("/add-item", async (req, res) => {
   try {
-    const { userId, type, quantity, image } = req.body;
+    const { userId, type, quantity } = req.body;
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const newItem = new Item({ user: userId, type, quantity, image });
+    const newItem = new Item({ user: userId, type, quantity});
     await newItem.save();
 
     user.items.push(newItem._id);

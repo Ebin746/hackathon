@@ -7,6 +7,9 @@ const Middleman = require("../model/Middleman");
 router.post("/signup", async (req, res) => {
   try {
     const { walletAddress, name, phone, role } = req.body;
+    if (!walletAddress || !name || !phone || !role) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
     if (role === "user") {
       const newUser = new User({ walletAddress, name, phone });
       await newUser.save();
