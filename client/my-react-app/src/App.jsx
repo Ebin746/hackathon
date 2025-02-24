@@ -8,7 +8,12 @@ function App() {
 
   return (
     <>
-    
+     <div className="login">
+     <form action="">
+      <label htmlFor="name">name</label>
+      <input type="text" className="name"/>
+     </form>
+     </div>
     </>
   )
 }
