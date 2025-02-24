@@ -1,74 +1,170 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import "./jobstatus.css"; 
-// import Product from "../card/productCard";
 import ABI from "../../../blockchain/artifacts/contracts/RecyclingSystem.sol/PaymentForwarder.json";
-
-
+import axios from "axios";
+import "./jobstatus.css";
 
 // Smart Contract Details
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with deployed address
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const CONTRACT_ABI = ABI.abi;
 
-const JobStatus = () => { const [recipient, setRecipient] = useState("");
-  const [amount, setAmount] = useState("");
+const JobStatus = () => {
+  const [items, setItems] = useState([]);
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      console.log("MetaMask detected:", window.ethereum);
+    } else {
+      console.error("MetaMask not detected. Please install MetaMask.");
+      setStatus("MetaMask not detected. Please install MetaMask.");
+    }
+    fetchAssignedItems();
+  }, []);
+
+  // Fetch assigned items from the backend
+  const fetchAssignedItems = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/middleman/assigned-items",
+        { id: "67bc5864afb8c019a8581a75" }
+      );
+      console.log("Fetched items:", response.data);
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
+
+  // Verify an individual item
+  const verifyItem = async (itemId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/middleman/verify-item",
+        { itemId }
+      );
+      console.log("Verification response:", response.data);
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item._id === itemId
+            ? { ...item, status: "Verified", ethValue: response.data.item.ethValue }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error verifying item:", error);
+    }
+  };
 
   // Request account connection via MetaMask
   const requestAccounts = async () => {
-    await window.ethereum.request({ method: "eth_requestAccounts" });
+    if (!window.ethereum) {
+      setStatus("MetaMask not found. Please install it.");
+      return null;
+    }
+    try {
+      console.log("Requesting MetaMask accounts...");
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      console.log("Accounts:", accounts);
+      return accounts[0]; // Return the first account
+    } catch (error) {
+      console.error("MetaMask connection error:", error);
+      setStatus("MetaMask connection failed: " + error.message);
+      return null;
+    }
   };
 
-  const forwardFunds = async () => {
+  // Forward ETH payment via smart contract
+  const forwardFunds = async (recipient, amount) => {
     if (!window.ethereum) {
       setStatus("Please install MetaMask.");
       return;
     }
-    if (!recipient || !amount) {
-      setStatus("Please enter a valid recipient address and amount.");
-      return;
-    }
     try {
-      await requestAccounts();
-      // ethers v6 uses BrowserProvider
+      setLoading(true);
+      const account = await requestAccounts(); // Ensure MetaMask connection
+      if (!account) {
+        setStatus("MetaMask connection rejected.");
+        setLoading(false);
+        return;
+      }
+  
+      console.log("Connected MetaMask account:", account);
+  
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
+      console.log("Signer retrieved:", signer);
+  
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-      // Convert the entered ETH amount (string) to wei
-      const ethAmount = ethers.parseEther(amount);
-
-      // Call the contract function, sending the specified ETH
+      console.log("Contract connected:", contract);
+  
+      const ethAmount = ethers.parseEther(amount.toString());
+      console.log("Sending transaction with:", { recipient, ethAmount });
+  
       const tx = await contract.forwardFunds(recipient, ethAmount, { value: ethAmount });
       setStatus("Transaction sent... Waiting for confirmation");
       await tx.wait();
       setStatus(`Transaction confirmed: ${tx.hash}`);
     } catch (error) {
-      console.error(error);
+      console.error("Transaction error:", error);
       setStatus("Transaction failed: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="app">
-      <h1>Payment Forwarder</h1>
-      <input
-        type="text"
-        placeholder="Recipient address"
-        value={recipient}
-        onChange={(e) => setRecipient(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Amount in ETH"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <button onClick={forwardFunds}>Send Payment</button>
-      <p>{status}</p>
+      <h1>Assigned Items</h1>
+
+      {/* Test button to connect MetaMask separately */}
+      <button onClick={async () => {
+        const acct = await requestAccounts();
+        if (acct) setStatus("Connected: " + acct);
+      }}>
+        Connect MetaMask
+      </button>
+
+      {items.length === 0 ? (
+        <p className="no-items">No assigned items found.</p>
+      ) : (
+        <div className="item-list">
+          {items.map((item) => (
+            <div key={item._id} className="item-card">
+              <h2>{item.name}</h2>
+              <p><strong>Material:</strong> {item.type}</p>
+              <p><strong>Weight:</strong> {item.quantity} </p>
+              <p><strong>Assigned Date:</strong> {new Date(item.date).toLocaleDateString()}</p>
+              <p><strong>Status:</strong> <span className="status">{item.status}</span></p>
+              
+              {item.ethValue && (
+                <p className="eth-value"><strong>ETH Value:</strong> {item.ethValue} ETH</p>
+              )}
+  
+              <div className="buttons">
+                {item.status !== "Verified" ? (
+                  <button onClick={() => verifyItem(item._id)} className="verify-btn">
+                    Verify
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => forwardFunds(item.user.walletAddress, item.ethValue)}
+                    disabled={loading}
+                    className={`pay-btn ${loading ? "disabled" : ""}`}
+                  >
+                    {loading ? "Processing..." : "Verify & Pay"}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+  
+      <p className="status-message">{status}</p>
     </div>
-  )
+  );
 };
 
 export default JobStatus;

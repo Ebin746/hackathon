@@ -5,8 +5,7 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  quantity: { type: Number, required: true }, // e.g., weight in kg
-  image: { type: String }, // Image URL
+  quantity: { type: Number, required: true },
   status: {
     type: String,
     default: "Pending",
