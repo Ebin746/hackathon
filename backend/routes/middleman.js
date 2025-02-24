@@ -68,6 +68,29 @@ router.post("/assign-item", async (req, res) => {
   }
 });
 
+router.get("/assigned-items", async (req, res) => {
+    try {
+      // Assume the middleman's wallet address is sent in the request (e.g., via authentication middleware)
+      const { walletAddress } = req.query;
+  
+      // Find the middleman by wallet address
+      const middleman = await Middleman.findOne({ walletAddress });
+  
+      if (!middleman) {
+        return res.status(404).json({ message: "Middleman not found" });
+      }
+  
+      // Fetch items assigned to this middleman
+      const assignedItems = await Item.find({ assignedMiddleman: middleman._id }).populate("user");
+  
+      // Return the assigned items
+      res.json(assignedItems);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching assigned items", error: err.message });
+    }
+  });
+  
+  
 //  Verify & Pay (Mock Response for Hackathon)
 router.post("/verify-item", async (req, res) => {
   try {
