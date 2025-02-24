@@ -71,10 +71,10 @@ router.post("/assign-item", async (req, res) => {
 router.get("/assigned-items", async (req, res) => {
     try {
       // Assume the middleman's wallet address is sent in the request (e.g., via authentication middleware)
-      const { walletAddress } = req.query;
+      const {id} = req.body;
   
       // Find the middleman by wallet address
-      const middleman = await Middleman.findOne({ walletAddress });
+      const middleman = await Middleman.findById(id);
   
       if (!middleman) {
         return res.status(404).json({ message: "Middleman not found" });
