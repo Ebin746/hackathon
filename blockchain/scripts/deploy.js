@@ -4,7 +4,7 @@ async function main() {
     const [deployer] = await hre.ethers.getSigners();
     console.log("Deploying contract with account:", deployer.address);
 
-    const RecyclingSystem = await hre.ethers.getContractFactory("RecyclingSystem");
+    const RecyclingSystem = await hre.ethers.getContractFactory("PaymentForwarder");
     const contract = await RecyclingSystem.deploy();
 
     await contract.deployed();

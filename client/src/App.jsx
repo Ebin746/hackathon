@@ -1,4 +1,4 @@
-import React from "react";
+
 import { BrowserRouter as Router, Routes, Route, Link , useLocation } from "react-router-dom";
 import LoginClient from "./components/loginclient";
 import LoginDelivery from "./components/loginpartner";
@@ -45,6 +45,7 @@ function App() {
           <Route path="/client-dashboard" element={<ClientDashboard />} />
           <Route path="/partner-dashboard" element={<PartnerDashboard />} />
           <Route path="/job-status" element={<JobStatus />} />
+
         </Routes>
     </Router>
     </>
