@@ -9,6 +9,7 @@ const ClientDashboard = () => {
   // Form state for adding an item
   const [itemType, setItemType] = useState("paper");
   const [quantity, setQuantity] = useState("");
+  const [scheduledDate, setScheduledDate] = useState(""); // New state for scheduled date
   const [status, setStatus] = useState("");
 
   // List of items added by the user
@@ -51,9 +52,11 @@ const ClientDashboard = () => {
         userId,
         type: itemType,
         quantity,
+        scheduledDate, // Send the scheduled date to backend
       });
       setStatus(response.data.message);
       setQuantity("");
+      setScheduledDate(""); // Clear the date input after submission
       // Refresh the items list after adding
       fetchItems();
     } catch (error) {
@@ -98,6 +101,15 @@ const ClientDashboard = () => {
                 onChange={(e) => setQuantity(e.target.value)}
               />
             </div>
+            <div className="form-group">
+              <label htmlFor="scheduledDate">Schedule Date</label>
+              <input
+                type="date"
+                id="scheduledDate"
+                value={scheduledDate}
+                onChange={(e) => setScheduledDate(e.target.value)}
+              />
+            </div>
             <div className="form-group image-preview">
               <label>Image Preview</label>
               <img src={imageMapping[itemType]} alt={itemType} />
@@ -121,8 +133,7 @@ const ClientDashboard = () => {
               {items.map((item) => (
                 <div key={item._id} className="item-card">
                   <img
-                    //src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/400x400"}
-                    src="https://placehold.co/400x400"
+                    src={imageMapping[item.type.toLowerCase()] || "/images/default.png"}
                     alt={item.type}
                     className="item-image"
                   />
@@ -136,6 +147,12 @@ const ClientDashboard = () => {
                     <p>
                       <strong>Status:</strong> {item.status}
                     </p>
+                    {item.scheduledDate && (
+                      <p>
+                        <strong>Schedule Date:</strong>{" "}
+                        {new Date(item.scheduledDate).toLocaleDateString()}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
