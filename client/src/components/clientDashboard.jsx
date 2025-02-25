@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 const ClientDashboard = () => {
   const userId = localStorage.getItem("userId") || "67bc5817afb8c019a8581a73";
 
-  const [itemType, setItemType] = useState("paper");
+  const [itemType, setItemType] = useState({ type: "paper", price: 0.5 });
   const [quantity, setQuantity] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
   const [status, setStatus] = useState("");
@@ -55,8 +55,9 @@ const ClientDashboard = () => {
     try {
       const response = await axios.post("http://localhost:3000/api/user/add-item", {
         userId,
-        type: itemType,
+        type: itemType.type,
         quantity,
+        price: itemType.price,
         scheduledDate,
         lat,
         long,
@@ -99,14 +100,20 @@ const ClientDashboard = () => {
               <label htmlFor="itemType">Item Type</label>
               <select
                 id="itemType"
-                value={itemType}
-                onChange={(e) => setItemType(e.target.value)}
+                value={itemType.type}
+                onChange={(e) => {
+                  const selectedOption = e.target.options[e.target.selectedIndex];
+                  setItemType({
+                    type: selectedOption.value,
+                    price: parseFloat(selectedOption.getAttribute("data-price")),
+                  });
+                }}
               >
-                <option value="paper">Paper</option>
-                <option value="electronics">Electronics</option>
-                <option value="glass">Glass</option>
-                <option value="furniture">Furniture</option>
-                <option value="plastic">Plastic</option>
+                <option value="paper" data-price="0.5">Paper - $0.5/kg</option>
+                <option value="electronics" data-price="5.0">Electronics - $5.0/kg</option>
+                <option value="glass" data-price="0.3">Glass - $0.3/kg</option>
+                <option value="furniture" data-price="2.0">Furniture - $2.0/kg</option>
+                <option value="plastic" data-price="0.8">Plastic - $0.8/kg</option>
               </select>
             </div>
             <div className="form-group">
@@ -166,6 +173,9 @@ const ClientDashboard = () => {
                     </p>
                     <p>
                       <strong>Quantity:</strong> {item.quantity} Kg
+                    </p>
+                    <p>
+                      <strong>Price:</strong> ${item.price}
                     </p>
                     <p>
                       <strong>Status:</strong> {item.status}
