@@ -5,6 +5,7 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  scheduledDate: { type: Date },
   quantity: { type: Number, required: true },
   status: {
     type: String,

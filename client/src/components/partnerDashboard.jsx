@@ -68,8 +68,9 @@ const PartnerDashboard = () => {
 
               {job?.items.map((item) => (
                 <div key={item._id} className="item">
-                  <p>📦 {item.type}</p>
-                  <p>🛠 Status: {item.status}</p>
+                 <p>📦 {item.type}</p>
+<p>📅 Date: {item.scheduledDate ? new Date(item.scheduledDate).toLocaleDateString("en-GB") : "DD-MM-YYYY"}</p>
+<p>🛠 Status: {item.status}</p>
                   <button
                     className="assign-btn"
                     onClick={() => {
