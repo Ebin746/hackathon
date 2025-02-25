@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../model/User");
-const Item = require("../model/Item")
+const Item = require("../model/Item");
 
 // 🔹 Add Recyclable Item
 router.post("/add-item", async (req, res) => {
   try {
-    const { userId, type, quantity, scheduledDate  } = req.body;
+    const { userId, type, quantity, scheduledDate, lat, long } = req.body;
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const newItem = new Item({ user: userId, type, quantity, scheduledDate });
+    const newItem = new Item({ user: userId, type, quantity, scheduledDate  ,location: { lat, long }});
     await newItem.save();
 
     user.items.push(newItem._id);

@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import "./clientdashboard.css";
 
+// Fix for default marker icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+});
+
 const ClientDashboard = () => {
-  // Use a constant userId for th
   const userId = localStorage.getItem("userId") || "67bc5817afb8c019a8581a73";
 
-  // Form state for adding an item
   const [itemType, setItemType] = useState("paper");
   const [quantity, setQuantity] = useState("");
-  const [scheduledDate, setScheduledDate] = useState(""); // New state for scheduled date
+  const [scheduledDate, setScheduledDate] = useState("");
   const [status, setStatus] = useState("");
-
-  // List of items added by the user
+  const [lat, setLat] = useState(9.9312); // Default latitude for Kochi
+  const [long, setLong] = useState(76.2673); // Default longitude for Kochi
   const [items, setItems] = useState([]);
 
-  // Mapping for placeholder images based on item type (update paths to images in your public folder)
   const imageMapping = {
     paper: "/images/paper.png",
     electronics: "/images/electronics.png",
@@ -24,7 +32,6 @@ const ClientDashboard = () => {
     plastic: "/images/plastic.png",
   };
 
-  // Fetch the user's added items from the backend
   const fetchItems = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/user/items/${userId}`);
@@ -35,12 +42,10 @@ const ClientDashboard = () => {
     }
   };
 
-  // Fetch items when the component mounts
   useEffect(() => {
     fetchItems();
   }, []);
 
-  // Handle form submission to add an item
   const handleAddItem = async (e) => {
     e.preventDefault();
     if (!quantity) {
@@ -52,17 +57,31 @@ const ClientDashboard = () => {
         userId,
         type: itemType,
         quantity,
-        scheduledDate, // Send the scheduled date to backend
+        scheduledDate,
+        lat,
+        long,
       });
       setStatus(response.data.message);
       setQuantity("");
-      setScheduledDate(""); // Clear the date input after submission
-      // Refresh the items list after adding
+      setScheduledDate("");
       fetchItems();
     } catch (error) {
       console.error("Error adding item:", error);
       setStatus("Error adding item: " + error.message);
     }
+  };
+
+  const LocationMarker = () => {
+    useMapEvents({
+      click(e) {
+        setLat(e.latlng.lat);
+        setLong(e.latlng.lng);
+      },
+    });
+
+    return lat === null ? null : (
+      <Marker position={[lat, long]}></Marker>
+    );
   };
 
   return (
@@ -72,7 +91,6 @@ const ClientDashboard = () => {
         <p>Welcome, Client! Manage your recyclable items here.</p>
       </header>
 
-      {/* Form Section */}
       <section className="form-section">
         <div className="card form-card">
           <h2>Add a Recyclable Item</h2>
@@ -110,12 +128,15 @@ const ClientDashboard = () => {
                 onChange={(e) => setScheduledDate(e.target.value)}
               />
             </div>
-            <div className="form-group image-preview">
-              <label>Image Preview</label>
-              <img
-              //src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/600x400"}
-              src={"https://placehold.co/600x400"}
-              alt={itemType} />
+            <div className="form-group">
+              <label htmlFor="location">Select Location</label>
+              <MapContainer center={[9.9312, 76.2673]} zoom={13} style={{ height: "300px", width: "100%" }}>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <LocationMarker />
+              </MapContainer>
             </div>
             <button type="submit" className="submit-btn">
               Add Item
@@ -125,7 +146,6 @@ const ClientDashboard = () => {
         </div>
       </section>
 
-      {/* Items Section */}
       <section className="items-section">
         <div className="card items-card">
           <h2>Your Added Items</h2>
@@ -136,8 +156,7 @@ const ClientDashboard = () => {
               {items.map((item) => (
                 <div key={item._id} className="item-card">
                   <img
-                    //src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/600x400"}
-                    src={"https://placehold.co/600x400"}
+                    src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/600x400"}
                     alt={item.type}
                     className="item-image"
                   />

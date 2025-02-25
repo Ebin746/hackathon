@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios
-import './loginclient.css';
+import "./loginclient.css";
 
 const LoginClient = () => {
   const [phone, setPhone] = useState("");
@@ -15,14 +15,14 @@ const LoginClient = () => {
       const response = await axios.post("http://localhost:3000/api/login", {
         phone,
         password,
-        role:"user"
+        role: "user",
       });
 
       if (response.data) {
         const { user, middleman } = response.data;
 
         if (user) {
-          localStorage.clear(); 
+          localStorage.clear();
           localStorage.setItem("userId", user._id); // Store user ID
           localStorage.setItem("role", "user");
           navigate("/client-dashboard");
