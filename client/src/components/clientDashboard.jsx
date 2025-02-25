@@ -4,7 +4,7 @@ import "./clientdashboard.css";
 
 const ClientDashboard = () => {
   // Use a constant userId for this demo (replace with real value from auth or context)
-  const userId = "67bc5817afb8c019a8581a73";
+  const userId = localStorage.getItem("userId") || "67bc5817afb8c019a8581a73";
 
   // Form state for adding an item
   const [itemType, setItemType] = useState("paper");
