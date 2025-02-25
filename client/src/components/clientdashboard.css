@@ -10,6 +10,18 @@ body {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Header styling */
@@ -22,12 +34,25 @@ body {
   font-size: 2.5rem;
   color: #333;
   margin-bottom: 10px;
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .dashboard-header p {
   font-size: 1.1rem;
   color: #666;
   margin-bottom: 20px;
+  animation: slideIn 0.6s ease;
 }
 
 /* Card styling */
@@ -37,6 +62,12 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 30px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Form Section */
@@ -47,6 +78,8 @@ body {
 .form-card h2 {
   margin-bottom: 20px;
   color: #333;
+  font-size: 1.8rem;
+  text-align: center;
 }
 
 .form-group {
@@ -67,10 +100,18 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 .image-preview {
   text-align: center;
+  margin: 20px 0;
 }
 
 .image-preview img {
@@ -79,6 +120,11 @@ body {
   object-fit: cover;
   border: 1px solid #ddd;
   border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.image-preview img:hover {
+  transform: scale(1.05);
 }
 
 .submit-btn {
@@ -89,11 +135,17 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 100%;
 }
 
 .submit-btn:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
 }
 
 .status-message {
@@ -101,6 +153,7 @@ body {
   text-align: center;
   color: #d9534f;
   font-weight: bold;
+  animation: fadeIn 0.5s ease;
 }
 
 /* Items Section */
@@ -108,11 +161,13 @@ body {
   margin-bottom: 20px;
   color: #333;
   text-align: center;
+  font-size: 1.8rem;
 }
 
 .no-items {
   text-align: center;
   color: #777;
+  font-size: 1.1rem;
 }
 
 .items-grid {
@@ -126,19 +181,25 @@ body {
   border: 1px solid #eee;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
   text-align: center;
 }
 
 .item-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
 }
 
 .item-image {
   width: 100%;
   height: 150px;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.item-image:hover {
+  transform: scale(1.1);
 }
 
 .item-details {
@@ -149,4 +210,24 @@ body {
 
 .item-details p {
   margin: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+  }
+
+  .form-group input,
+  .form-group select {
+    font-size: 0.9rem;
+  }
+
+  .submit-btn {
+    font-size: 0.9rem;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
 }

@@ -1,3 +1,4 @@
+// CLIENT LOGIN
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './loginclient.css' ;
@@ -11,9 +12,27 @@ const LoginClient = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // alert(`Client Login Attempted with: ${email}`);
+    // alert(Client Login Attempted with: ${email});
         // Redirect to the client dashboard page (create this page later)
-        navigate('/client-dashboard');
+        const storedClientData = localStorage.getItem("clientData");
+
+        if (storedClientData) {
+          const clientData = JSON.parse(storedClientData);
+    
+          // Validate email and password (basic example)
+          if (email === clientData.email && password === clientData.password) {
+            // Optionally, store a login flag in local storage
+            localStorage.setItem("isLoggedIn", "true");
+    
+            // Navigate to the client dashboard
+            navigate("/client-dashboard");
+          } else {
+            alert("Incorrect email or password.");
+          }
+        } else {
+          alert("No client found. Please sign up first.");
+        }
+        
 
   };
 
@@ -27,6 +46,9 @@ const LoginClient = () => {
             </li>
           </ul>
         </nav>
+        <p>
+  Don't have an account? <Link to="/client-signup">Sign Up</Link>
+</p>
       </header>
     <div className="login-container">
       <h2>Client Login</h2>

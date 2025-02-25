@@ -3,6 +3,7 @@
   max-width: 900px;
   margin: auto;
   padding: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
 /* Job list styles */
@@ -13,9 +14,15 @@
 
 .job-card {
   background: white;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .item {
@@ -23,19 +30,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.item:last-child {
+  border-bottom: none;
 }
 
 .assign-btn {
   background: #007bff;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .assign-btn:hover {
   background: #0056b3;
+  transform: scale(1.05);
+}
+
+.assign-btn:active {
+  transform: scale(0.95);
 }
 
 /* Modal styles */
@@ -49,47 +67,83 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
   background: white;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 25px;
+  border-radius: 15px;
   text-align: center;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .confirm-btn {
   background: #28a745;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
   margin-right: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .confirm-btn:hover {
   background: #218838;
+  transform: scale(1.05);
+}
+
+.confirm-btn:active {
+  transform: scale(0.95);
 }
 
 .cancel-btn {
   background: #dc3545;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .cancel-btn:hover {
   background: #c82333;
+  transform: scale(1.05);
+}
+
+.cancel-btn:active {
+  transform: scale(0.95);
 }
 
 /* Header styles */
 .home-header {
   background: #007bff;
-  padding: 10px;
+  padding: 15px;
   color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .home-nav ul {
@@ -97,13 +151,61 @@
   list-style: none;
   justify-content: space-around;
   padding: 0;
+  margin: 0;
 }
 
 .home-nav ul li a {
   color: white;
   text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.home-nav ul li a:hover {
+  color: #ffdd57;
+  transform: translateY(-2px);
 }
 
 .job-status-link {
   font-weight: bold;
+}
+
+/* Additional effects */
+h2 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h3 {
+  color: #007bff;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+  }
+
+  .job-card {
+    padding: 15px;
+  }
+
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .assign-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
 }

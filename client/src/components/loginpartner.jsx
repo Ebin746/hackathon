@@ -11,8 +11,27 @@ const LoginDelivery = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // alert(`Delivery Partner Login Attempted with: ${email}`);
-    navigate('/partner-dashboard')
+    // alert(Delivery Partner Login Attempted with: ${email});
+    const storedPartnerData = localStorage.getItem("partnerData");
+
+        if (storedPartnerData) {
+          const partnerData = JSON.parse(storedPartnerData);
+    
+          // Validate email and password (basic example)
+          if (email === partnerData.email && password === partnerData.password) {
+            // Optionally, store a login flag in local storage
+            localStorage.setItem("isLoggedIn", "true");
+    
+            // Navigate to the client dashboard
+            navigate("/partner-dashboard");
+          } else {
+            alert("Incorrect email or password.");
+          }
+        } else {
+          alert("No client found. Please sign up first.");
+        }
+        
+
 
   };
 
@@ -26,6 +45,10 @@ const LoginDelivery = () => {
                 </li>
               </ul>
             </nav>
+            <p>
+  Don't have an account? <Link to="/delivery-signup">Sign Up</Link>
+</p>
+
           </header>
     <div className="login-container">
       <h2>Delivery Partner Login</h2>

@@ -112,7 +112,10 @@ const ClientDashboard = () => {
             </div>
             <div className="form-group image-preview">
               <label>Image Preview</label>
-              <img src={imageMapping[itemType]} alt={itemType} />
+              <img
+              //src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/600x400"}
+              src={"https://placehold.co/600x400"}
+              alt={itemType} />
             </div>
             <button type="submit" className="submit-btn">
               Add Item
@@ -133,7 +136,8 @@ const ClientDashboard = () => {
               {items.map((item) => (
                 <div key={item._id} className="item-card">
                   <img
-                    src={imageMapping[item.type.toLowerCase()] || "/images/default.png"}
+                    //src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/600x400"}
+                    src={"https://placehold.co/600x400"}
                     alt={item.type}
                     className="item-image"
                   />
