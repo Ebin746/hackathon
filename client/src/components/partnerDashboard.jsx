@@ -90,7 +90,7 @@ const PartnerDashboard = () => {
                     Assign Middleman
                   </button>
                   {item?.location && (
-                    <MapContainer center={[item.location.lat, item.location.long]} zoom={13} style={{ height: "200px", width: "100%", marginTop: "10px" }}>
+                    <MapContainer center={[item.location.lat, item.location.long]} zoom={13} style={{ height: "150px", width: "300px", borderRadius:"90%" }}>
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
