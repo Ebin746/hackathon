@@ -48,7 +48,11 @@ const JobStatus = () => {
       setItems((prevItems) =>
         prevItems.map((item) =>
           item._id === itemId
-            ? { ...item, status: "Verified", ethValue: response.data.item.ethValue }
+            ? { 
+                ...item, 
+                status: "Verified", 
+                ethValue: response.data.item.ethValue 
+              }
             : item
         )
       );
@@ -75,8 +79,8 @@ const JobStatus = () => {
     }
   };
 
-  // Forward ETH payment via smart contract
-  const forwardFunds = async (recipient, amount) => {
+  // Forward ETH payment via smart contract and update payment status via API
+  const forwardFunds = async (recipient, amount, itemId) => {
     if (!window.ethereum) {
       setStatus("Please install MetaMask.");
       return;
@@ -106,6 +110,16 @@ const JobStatus = () => {
       setStatus("Transaction sent... Waiting for confirmation");
       await tx.wait();
       setStatus(`Transaction confirmed: ${tx.hash}`);
+  
+      // Call API endpoint to update payment status in the backend
+      await axios.post("http://localhost:3000/api/middleman/update-payment", { itemId });
+  
+      // Update local state to mark payment as done for this item
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item._id === itemId ? { ...item, paymentIsDone: true } : item
+        )
+      );
     } catch (error) {
       console.error("Transaction error:", error);
       setStatus("Transaction failed: " + error.message);
@@ -119,10 +133,13 @@ const JobStatus = () => {
       <h1>Assigned Items</h1>
 
       {/* Test button to connect MetaMask separately */}
-      <button onClick={async () => {
-        const acct = await requestAccounts();
-        if (acct) setStatus("Connected: " + acct);
-      }}>
+      <button
+        onClick={async () => {
+          const acct = await requestAccounts();
+          if (acct) setStatus("Connected: " + acct);
+        }}
+        className="connect-btn"
+      >
         Connect MetaMask
       </button>
 
@@ -135,23 +152,38 @@ const JobStatus = () => {
               <h2>{item.name}</h2>
               <p><strong>Material:</strong> {item.type}</p>
               <p><strong>Weight:</strong> {item.quantity} </p>
-              <p><strong>Assigned Date:</strong> {new Date(item.date).toLocaleDateString()}</p>
-              <p><strong>Status:</strong> <span className="status">{item.status}</span></p>
+              <p>
+                <strong>Assigned Date:</strong>{" "}
+                {new Date(item.date).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span className="status">{item.status}</span>
+              </p>
               
               {item.ethValue && (
-                <p className="eth-value"><strong>ETH Value:</strong> {item.ethValue} ETH</p>
+                <p className="eth-value">
+                  <strong>ETH Value:</strong> {item.ethValue} ETH
+                </p>
               )}
-  
+
               <div className="buttons">
                 {item.status !== "Verified" ? (
-                  <button onClick={() => verifyItem(item._id)} className="verify-btn">
+                  <button
+                    onClick={() => verifyItem(item._id)}
+                    className="button verify-btn"
+                  >
                     Verify
                   </button>
+                ) : item.paymentIsDone ? (
+                  <p className="payment-done">Payment Completed</p>
                 ) : (
                   <button
-                    onClick={() => forwardFunds(item.user.walletAddress, item.ethValue)}
+                    onClick={() =>
+                      forwardFunds(item.user.walletAddress, item.ethValue, item._id)
+                    }
                     disabled={loading}
-                    className={`pay-btn ${loading ? "disabled" : ""}`}
+                    className={`button pay-btn ${loading ? "disabled" : ""}`}
                   >
                     {loading ? "Processing..." : "Verify & Pay"}
                   </button>
@@ -161,7 +193,7 @@ const JobStatus = () => {
           ))}
         </div>
       )}
-  
+
       <p className="status-message">{status}</p>
     </div>
   );

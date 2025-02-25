@@ -12,6 +12,7 @@ const ItemSchema = new mongoose.Schema({
   },
   assignedMiddleman: { type: mongoose.Schema.Types.ObjectId, ref: "Middleman" }, // Assigned middleman
   ethValue: { type: Number, default: 0 }, // ETH allocated for this item
+  paymentIsDone: { type: Boolean, default: false } 
 });
 
 module.exports = mongoose.model("Item", ItemSchema);

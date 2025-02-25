@@ -110,4 +110,26 @@ router.post("/verify-item", async (req, res) => {
   }
 });
 
+router.post("/update-payment", async (req, res) => {
+  try {
+    const { itemId } = req.body;
+    if (!itemId) {
+      return res.status(400).json({ message: "Item ID is required" });
+    }
+    
+    // Find the item by ID
+    const item = await Item.findById(itemId);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    // Update the payment status to true
+    item.paymentIsDone = true;
+    await item.save();
+
+    res.json({ message: "Payment status updated", item });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating payment status", error: err.message });
+  }
+});
 module.exports = router;

@@ -68,7 +68,7 @@ const PartnerDashboard = () => {
 
               {job?.items.map((item) => (
                 <div key={item._id} className="item">
-                  <p>📦 {item.name}</p>
+                  <p>📦 {item.type}</p>
                   <p>🛠 Status: {item.status}</p>
                   <button
                     className="assign-btn"
