@@ -1,0 +1,89 @@
+.dashboard-container {
+  width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+}
+
+.dashboard-container h2,
+.dashboard-container h3 {
+  text-align: center;
+  color: #333;
+}
+
+.dashboard-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.dashboard-section {
+  width: 48%;
+  padding: 10px;
+  background-color: #e6e6e6;
+  border-radius: 5px;
+}
+
+.dashboard-section p {
+  margin: 5px 0;
+}
+
+.dashboard-container button {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard-container button:hover {
+  background-color: #0056b3;
+}
+
+.recent-items {
+  margin-top: 20px;
+}
+
+.item-card {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #fff;
+}
+
+.item-card p {
+  margin: 5px 0;
+}
+
+.home-header {
+  background-color: #333;
+  padding: 10px 0;
+}
+
+.home-nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.home-nav ul li {
+  margin: 0 15px;
+}
+
+.home-nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.home-nav ul li a:hover {
+  color: #f0f0f0;
+}

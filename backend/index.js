@@ -11,13 +11,14 @@ app.use(express.json());
 const userRoutes = require("./routes/user");
 const auth = require("./routes/auth");
 const middlemanRoutes = require("./routes/middleman");
+const Company = require("./routes/company")
 
 
 
 app.use("/api/user", userRoutes);
 app.use("/api", auth);
 app.use("/api/middleman", middlemanRoutes);
-
+app.use("/api/company",Company)
 app.listen(3000,()=>{
 console.log("server started");
 databaseConnection();

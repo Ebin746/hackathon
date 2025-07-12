@@ -14,6 +14,7 @@ const ItemSchema = new mongoose.Schema({
   assignedMiddleman: { type: mongoose.Schema.Types.ObjectId, ref: "Middleman" }, // Assigned middleman
   ethValue: { type: Number, default: 0 }, // ETH allocated for this item
   paymentIsDone: { type: Boolean, default: false } ,
+   companyVerified: { type: Boolean, default: false }, // Company verification status
   location: {
     lat: { type: Number}, // Latitude
     long: { type: Number} // Longitude
