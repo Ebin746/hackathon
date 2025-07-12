@@ -1,88 +1,44 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./signupclient.css"; // Create this CSS file for styling
+import axios from "axios";
+//import "./signup.css";
 
-const SignUpClient = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [walletAddress, setWalletAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const navigate = useNavigate();
+const UserSignup = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    password: "",
+  });
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Call your API to register the client user
-    // For now, simply navigate to the client dashboard after sign-up
-      // Create an object with the client data
-      const clientData = {
-        fullName,
-        email,
-        password,
-        walletAddress,
-        phoneNumber,
-      };
-      localStorage.setItem("clientData", JSON.stringify(clientData));
-    navigate('/client-dashboard');
+    try {
+      const res = await axios.post("http://localhost:3000/api/signup", {
+        ...formData,
+        role: "user",
+      });
+      setMessage(res.data.message);
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Error during signup");
+    }
   };
 
   return (
-    <>
-      <header className="home-header">
-        <nav className="home-nav">
-          <ul>
-            <li>
-              <Link to="/">home</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className="signup-container">
-        <h2>Client Sign Up</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Wallet Address"
-            value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)}
-            required
-          />
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            required
-          />
-          <button type="submit">Sign Up</button>
-        </form>
-        <p>
-          Already have an account? <Link to="/client-login">Login here</Link>
-        </p>
-      </div>
-    </>
+    <div className="signup-container">
+      <h2>User Sign Up</h2>
+      <form onSubmit={handleSubmit} className="signup-form">
+        <input type="text" name="name" placeholder="Full Name" onChange={handleChange} required />
+        <input type="text" name="phone" placeholder="Phone Number" onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+        <button type="submit">Sign Up</button>
+        {message && <p className="signup-message">{message}</p>}
+      </form>
+    </div>
   );
 };
 
-export default SignUpClient;
+export default UserSignup;

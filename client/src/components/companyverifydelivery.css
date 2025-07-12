@@ -48,6 +48,32 @@
   background-color: #218838;
 }
 
+.item-card button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.payment-section {
+  margin-top: 10px;
+}
+
+.payment-section button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.payment-section button:hover {
+  background-color: #0056b3;
+}
+
+.payment-section p {
+  display: inline-block;
+  margin: 5px 10px;
+  color: #333;
+}
+
 .home-header {
   background-color: #333;
   padding: 10px 0;

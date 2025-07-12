@@ -97,7 +97,7 @@ router.get("/available-items", async (req, res) => {
       companyVerified: false, // Not yet verified by company
     })
     .populate("user", "name walletAddress")
-    .populate("assignedMiddleman", "name");
+    .populate("assignedMiddleman", "name walletAddress");
     
     res.json(items);
   } catch (error) {
@@ -108,7 +108,7 @@ router.get("/available-items", async (req, res) => {
 // Company Verifies Middleman Delivery
 router.post("/verify-middleman-delivery", async (req, res) => {
   try {
-    const { itemId, companyId, quantityVerified, carbonCreditsGenerated } = req.body;
+    const { itemId, companyId, carbonCreditsGenerated } = req.body;
     
     // Find the item and company
     const item = await Item.findById(itemId);
@@ -120,11 +120,6 @@ router.post("/verify-middleman-delivery", async (req, res) => {
     
     if (item.status !== "Verified") {
       return res.status(400).json({ message: "Item not yet verified by middleman" });
-    }
-    
-    // Verify quantity
-    if (quantityVerified !== item.quantity) {
-      return res.status(400).json({ message: "Quantity mismatch" });
     }
     
     // Update item
@@ -195,7 +190,7 @@ router.get("/dashboard/:companyId", async (req, res) => {
     }
     
     // Calculate stats
-    const totalProcessedItems = company.processedItems.length;
+    const totalProcessedItems =-argus.json
     const totalCarbonCredits = company.carbonCreditsEarned;
     const totalEthBalance = company.ethBalance;
     

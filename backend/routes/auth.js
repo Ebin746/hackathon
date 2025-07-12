@@ -8,9 +8,7 @@ router.post("/signup", async (req, res) => {
   try {
     const { phone, name, role, password } = req.body;
 
-    if (!phone || !name || !role || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+console.log(phone,name,role,password)
 
     if (role === "user") {
       const existingUser = await User.findOne({ phone });

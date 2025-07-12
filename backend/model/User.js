@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  walletAddress: { type: String, required: true, unique: true }, // ETH Address
+  walletAddress: { type: String }, // ETH Address
   name: { type: String, required: true },
   phone: { type: String },
   password:{type:String},

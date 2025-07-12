@@ -1,19 +1,19 @@
 const hre = require("hardhat");
 
 async function main() {
-    const [deployer] = await hre.ethers.getSigners();
-    console.log("Deploying contract with account:", deployer.address);
+  const [deployer] = await hre.ethers.getSigners();
+  console.log(`Deploying WastePayoutManager with account: ${deployer.address}`);
 
-    const RecyclingSystem = await hre.ethers.getContractFactory("PaymentForwarder");
-    const contract = await RecyclingSystem.deploy();
+  const Factory = await hre.ethers.getContractFactory("WastePayoutManager");
+  const contract = await Factory.deploy();
+  await contract.waitForDeployment(); // ethers v6
 
-    await contract.deployed();
-    console.log("Contract deployed at:", contract.address);
+  console.log(`WastePayoutManager deployed at: ${await contract.getAddress()}`);
 }
 
 main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
