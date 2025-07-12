@@ -1,0 +1,79 @@
+/* CompanyDashboard.css */
+
+/* Smooth scrolling on containers with overflow */
+.max-h-96 {
+  scrollbar-width: thin;
+  scrollbar-color: #9ca3af #f3f4f6; /* thumb and track colors */
+}
+
+/* Chrome/Edge/Safari custom scrollbar */
+.max-h-96::-webkit-scrollbar {
+  width: 6px;
+}
+
+.max-h-96::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.max-h-96::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 4px;
+}
+
+/* Optional: pulse animation for loading spinner */
+@keyframes spin-smooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin-smooth 1s linear infinite;
+}
+
+/* Transition for buttons */
+button {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+/* Card hover effect */
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge styling (like Verified tag) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Utility override: fix focus ring outline */
+input:focus,
+button:focus {
+  outline: none;
+}
+
+/* Placeholder enhancements (optional) */
+input::placeholder {
+  color: #9ca3af;
+}
+
+/* Responsive text overflow on wallet address if needed */
+.wallet-address {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

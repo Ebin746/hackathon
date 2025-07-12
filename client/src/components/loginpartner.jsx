@@ -20,7 +20,7 @@ const LoginDelivery = () => {
 
       if (response.data) {
         localStorage.clear(); 
-        localStorage.setItem("userId", response.data.middleman._id); // Store middleman ID
+        localStorage.setItem("middlemanId", response.data.middleman._id); // Store middleman ID
         localStorage.setItem("isLoggedIn", "true");
         navigate("/partner-dashboard");
       } else {

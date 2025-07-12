@@ -18,7 +18,7 @@ const PartnerDashboard = () => {
   const [availableJobs, setAvailableJobs] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
-
+const middlemanId = localStorage.getItem("middlemanId");
   // Fetch available jobs
   useEffect(() => {
     axios
@@ -118,7 +118,7 @@ const PartnerDashboard = () => {
             <p>Are you sure you want to assign {selectedItem.name}?</p>
             <button
               className="confirm-btn"
-              onClick={() => assignItem("67bc5864afb8c019a8581a75", selectedItem._id)}
+              onClick={() => assignItem(middlemanId, selectedItem._id)}
             >
               Confirm
             </button>

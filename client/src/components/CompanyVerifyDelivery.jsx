@@ -6,7 +6,8 @@ import ABIs from "../../../blockchain/artifacts/contracts/WastePayoutManager.sol
 import "./companyverifydelivery.css";
 
 const ABI = ABIs.abi;
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // ✅ Hardcoded
+
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 const CompanyVerifyDelivery = () => {
   const [items, setItems] = useState([]);
@@ -19,6 +20,7 @@ const CompanyVerifyDelivery = () => {
     const fetchItems = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/company/available-items");
+        console.log(response.data)
         setItems(response.data);
       } catch (error) {
         alert(error.response?.data?.message || "Error fetching items");

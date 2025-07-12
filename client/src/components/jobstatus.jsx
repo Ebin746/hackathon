@@ -6,6 +6,7 @@ const JobStatus = () => {
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+const middlemanId = localStorage.getItem("middlemanId");
 
   useEffect(() => {
     fetchAssignedItems();
@@ -15,7 +16,7 @@ const JobStatus = () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/middleman/assigned-items",
-        { id: "67bc5864afb8c019a8581a75" }
+        { id: middlemanId }
       );
       console.log("Fetched items:", response.data);
       setItems(response.data);
