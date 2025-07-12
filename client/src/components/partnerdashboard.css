@@ -30,7 +30,8 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  margin: 20px;
+  border-bottom: 1px solid #000000;
 }
 
 .item:last-child {

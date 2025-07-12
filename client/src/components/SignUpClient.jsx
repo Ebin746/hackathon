@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import "./signupclient.css"; // Create this CSS file for styling
+import "./signupclient.css"; // Create this CSS file for styling
 
 const SignUpClient = () => {
   const [fullName, setFullName] = useState("");

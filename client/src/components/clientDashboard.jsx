@@ -163,7 +163,7 @@ const ClientDashboard = () => {
               {items.map((item) => (
                 <div key={item._id} className="item-card">
                   <img
-                    src={imageMapping[item.type.toLowerCase()] || "https://placehold.co/600x400"}
+                    src={ "https://placehold.co/600x400"}
                     alt={item.type}
                     className="item-image"
                   />
@@ -174,9 +174,7 @@ const ClientDashboard = () => {
                     <p>
                       <strong>Quantity:</strong> {item.quantity} Kg
                     </p>
-                    <p>
-                      <strong>Price:</strong> ${item.price}
-                    </p>
+                    
                     <p>
                       <strong>Status:</strong> {item.status}
                     </p>

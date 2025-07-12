@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link , useLocation } from "react-router-dom";
 import LoginClient from "./components/loginclient";
 import LoginDelivery from "./components/loginpartner";

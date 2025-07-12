@@ -77,20 +77,12 @@ const PartnerDashboard = () => {
 
               {job?.items.map((item) => (
                 <div key={item._id} className="item">
-                  <p>📦 {item.type}</p>
+                  <p>📦 {item.type} : {item.quantity} kg </p>
                   <p>📅 Date: {item.scheduledDate ? new Date(item.scheduledDate).toLocaleDateString("en-GB") : "DD-MM-YYYY"}</p>
                   <p>🛠 Status: {item.status}</p>
-                  <button
-                    className="assign-btn"
-                    onClick={() => {
-                      setSelectedItem(item);
-                      setShowModal(true);
-                    }}
-                  >
-                    Assign Middleman
-                  </button>
+                  
                   {item?.location && (
-                    <MapContainer center={[item.location.lat, item.location.long]} zoom={13} style={{ height: "150px", width: "300px", borderRadius:"90%" }}>
+                    <MapContainer center={[item.location.lat, item.location.long]} zoom={13} style={{ height: "150px", width: "300px", borderRadius:"10%" }}>
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -102,6 +94,15 @@ const PartnerDashboard = () => {
                       </Marker>
                     </MapContainer>
                   )}
+                  <button
+                    className="assign-btn"
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setShowModal(true);
+                    }}
+                  >
+                    Take Work
+                  </button>
                 </div>
               ))}
             </div>
