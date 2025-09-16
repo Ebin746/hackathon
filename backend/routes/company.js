@@ -111,7 +111,9 @@ router.post("/verify-middleman-delivery", async (req, res) => {
     const { itemId, companyId, carbonCreditsGenerated } = req.body;
     
     // Find the item and company
-    const item = await Item.findById(itemId);
+    const item = await Item.findById(itemId)
+      .populate("user", "name walletAddress")
+      .populate("assignedMiddleman", "name walletAddress");
     const company = await Company.findById(companyId);
     
     if (!item || !company) {
