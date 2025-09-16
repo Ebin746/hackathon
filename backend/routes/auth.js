@@ -38,26 +38,28 @@ router.post("/signup", async (req, res) => {
   }
 });
 // 🔹 Login (Checks Phone)
+// 🔹 Login (Checks Wallet Address)
 router.post("/login", async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { walletAddress, role } = req.body;
 
-    if (!phone) {
-      return res.status(400).json({ message: "Phone number is required" });
+    if (!walletAddress) {
+      return res.status(400).json({ message: "Wallet address is required" });
     }
 
-    const user = await User.findOne({ phone });
-    const middleman = await Middleman.findOne({ phone });
-
-    if (user) {
-      return res.json({ message: "User logged in", user });
+    if (role === "user") {
+      const user = await User.findOne({ walletAddress });
+      if (user) {
+        return res.json({ message: "User logged in", user });
+      }
+    } else if (role === "middleman") {
+      const middleman = await Middleman.findOne({ walletAddress });
+      if (middleman) {
+        return res.json({ message: "Middleman logged in", middleman });
+      }
     }
 
-    if (middleman) {
-      return res.json({ message: "Middleman logged in", middleman });
-    }
-
-    res.status(404).json({ message: "User not found" });
+    res.status(404).json({ message: "Account not found for this wallet" });
   } catch (err) {
     res.status(500).json({ message: "Error logging in", error: err.message });
   }

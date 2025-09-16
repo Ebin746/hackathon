@@ -1,39 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 import "./loginclient.css";
 
 const LoginClient = () => {
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
     try {
+      if (!window.ethereum) {
+        alert("MetaMask not detected. Please install MetaMask!");
+        return;
+      }
+
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const walletAddress = accounts[0];
+
       const response = await axios.post("http://localhost:3000/api/login", {
-        phone,
-        password,
+        walletAddress,
         role: "user",
       });
 
-      if (response.data) {
-        const { user, middleman } = response.data;
-
-        if (user) {
-          localStorage.clear();
-          localStorage.setItem("userId", user._id); // Store user ID
-          localStorage.setItem("role", "user");
-          navigate("/client-dashboard");
-        } else if (middleman) {
-          localStorage.setItem("userId", middleman._id); // Store middleman ID
-          localStorage.setItem("role", "middleman");
-          navigate("/middleman-dashboard");
-        }
+      if (response.data.user) {
+        localStorage.clear();
+        localStorage.setItem("userId", response.data.user._id);
+        localStorage.setItem("role", "user");
+        navigate("/client-dashboard");
+      } else {
+        alert(response.data.message || "Login failed");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Login failed. Please try again.");
+      alert(error.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -42,9 +39,7 @@ const LoginClient = () => {
       <header className="home-header">
         <nav className="home-nav">
           <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
+            <li><Link to="/">Home</Link></li>
           </ul>
         </nav>
         <p>
@@ -54,23 +49,7 @@ const LoginClient = () => {
 
       <div className="login-container">
         <h2>Client Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Login</button>
-        </form>
+        <button onClick={handleLogin}>Login with MetaMask</button>
       </div>
     </>
   );
