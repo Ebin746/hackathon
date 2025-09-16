@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./companysignup.css";
+
 
 const CompanySignup = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +27,7 @@ const CompanySignup = () => {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        localStorage.setItem("companyWallet",accounts[0]);
         setFormData({ ...formData, walletAddress: accounts[0] });
       } catch (error) {
         alert("MetaMask connection failed");

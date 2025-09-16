@@ -85,12 +85,7 @@ const PartnerDashboard = () => {
                 Welcome back! Here are the available delivery jobs for you.
               </p>
             </div>
-            <div className="stats-container">
-              <div className="stat-card">
-                <span className="stat-number">{availableJobs.length}</span>
-                <span className="stat-label">Available Jobs</span>
-              </div>
-            </div>
+       
           </section>
 
           {/* Jobs Section */}

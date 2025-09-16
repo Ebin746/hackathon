@@ -6,8 +6,7 @@ import ABIs from "../../../blockchain/artifacts/contracts/WastePayoutManager.sol
 import "./companyverifydelivery.css";
 
 const ABI = ABIs.abi;
-
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const CONTRACT_ADDRESS = localStorage.getItem("companyWallet");
 
 const CompanyVerifyDelivery = () => {
   const [items, setItems] = useState([]);
@@ -20,7 +19,7 @@ const CompanyVerifyDelivery = () => {
     const fetchItems = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/company/available-items");
-        console.log(response.data)
+        console.log(response.data);
         setItems(response.data);
       } catch (error) {
         alert(error.response?.data?.message || "Error fetching items");
@@ -48,7 +47,7 @@ const CompanyVerifyDelivery = () => {
         carbonCreditsGenerated: parseFloat(formData[itemId]?.carbonCredits || 1),
       });
       alert(response.data.message);
-      setItems(items.map((item) => 
+      setItems(items.map((item) =>
         item._id === itemId ? response.data.item : item
       ));
       setFormData({ ...formData, [itemId]: undefined });
@@ -57,12 +56,8 @@ const CompanyVerifyDelivery = () => {
     }
   };
 
-  const handlePayment = async (amt, itemId, type) => {
-    const addressMap = {
-      user: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-      deliveryBoy: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-    };
-    const to = addressMap[type];
+  const handlePayment = async (amt, itemId, type, walletAddress) => {
+    const to = walletAddress; // ✅ Dynamic wallet from backend
 
     if (!window.ethereum) {
       alert("Install MetaMask");
@@ -79,11 +74,7 @@ const CompanyVerifyDelivery = () => {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
 
-      const contract = new ethers.Contract(
-        CONTRACT_ADDRESS, // ✅ Using hardcoded address
-        ABI,
-        signer
-      );
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
       const method = type === "user" ? "sendToUser" : "sendToDeliveryBoy";
       const tx = await contract[method](to, {
@@ -137,8 +128,8 @@ const CompanyVerifyDelivery = () => {
             <div key={item._id} className="item-card">
               <p>Type: {item.type}</p>
               <p>Quantity: {item.quantity}</p>
-              <p>User: {item.user.name}</p>
-              <p>Middleman: {item.assignedMiddleman.name}</p>
+              <p>User: {item.user.name} ({item.user.walletAddress})</p>
+              <p>Middleman: {item.assignedMiddleman.name} ({item.assignedMiddleman.walletAddress})</p>
               <p>ETH Value: {item.ethValue}</p>
               <p>Status: {item.status}</p>
 
@@ -157,18 +148,22 @@ const CompanyVerifyDelivery = () => {
               ) : (
                 <div className="payment-section">
                   <button
-                    onClick={() => handlePayment(item.ethValue, item._id, "user")}
+                    onClick={() =>
+                      handlePayment(item.ethValue, item._id, "user", item.user.walletAddress)
+                    }
                     disabled={paymentStatus[item._id]?.user === "✅ Sent!"}
                   >
-                    Pay to User
+                    Pay to User ({item.user.walletAddress})
                   </button>
                   <p>{paymentStatus[item._id]?.user || ""}</p>
 
                   <button
-                    onClick={() => handlePayment(item.ethValue, item._id, "deliveryBoy")}
+                    onClick={() =>
+                      handlePayment(item.ethValue, item._id, "deliveryBoy", item.assignedMiddleman.walletAddress)
+                    }
                     disabled={paymentStatus[item._id]?.deliveryBoy === "✅ Sent!"}
                   >
-                    Pay to Delivery Boy
+                    Pay to Delivery Boy ({item.assignedMiddleman.walletAddress})
                   </button>
                   <p>{paymentStatus[item._id]?.deliveryBoy || ""}</p>
                 </div>
